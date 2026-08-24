@@ -1,0 +1,261 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-background text-charcoal antialiased;
+    font-family: 'system-ui', '-apple-system', sans-serif;
+    min-height: 100vh;
+    height: auto;
+  }
+  body {
+    @apply min-h-screen bg-background;
+    height: auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  h1,h2,h3,h4,h5,h6 { @apply font-serif font-normal leading-tight; }
+  h1 { @apply text-4xl md:text-5xl; }
+  h2 { @apply text-3xl md:text-4xl; }
+  h3 { @apply text-xl; }
+
+  a { @apply no-underline transition-opacity; }
+  a:hover { @apply opacity-75; }
+  button { @apply font-sans cursor-pointer; }
+
+  input, select, textarea {
+    @apply bg-white border border-charcoal/15 rounded px-3 py-2.5 text-charcoal text-sm
+           placeholder-charcoal/35 focus:outline-none focus:ring-2 focus:ring-accent/30
+           focus:border-accent/60 transition-colors;
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto;
+  }
+  label {
+    @apply block text-xs font-bold uppercase tracking-wider text-charcoal/50 mb-1.5;
+  }
+}
+
+@layer components {
+
+  /* ── Layout ── */
+  .container-main { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+  .page-main      { @apply container-main py-10 md:py-14; }
+
+  /* ── Eyebrow label ── */
+  .eyebrow { @apply text-xs font-bold uppercase tracking-widest text-accent mb-2 block; }
+
+  /* ── Buttons ── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 font-semibold text-sm
+           transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 rounded cursor-pointer select-none;
+  }
+  .btn-primary   { @apply btn bg-accent text-white hover:bg-red-800 focus:ring-accent; }
+  .btn-secondary { @apply btn bg-charcoal text-white hover:bg-charcoal/80 focus:ring-charcoal; }
+  .btn-ghost     { @apply btn bg-transparent text-charcoal border border-charcoal/25 hover:bg-charcoal/5 focus:ring-charcoal; }
+  .btn-danger    { @apply btn-primary; }
+  .btn:disabled  { @apply opacity-40 cursor-not-allowed pointer-events-none; }
+
+  /* ── Input ── */
+  .input {
+    @apply w-full bg-white border border-charcoal/15 rounded px-3.5 py-2.5 text-charcoal text-sm
+           placeholder-charcoal/35 focus:outline-none focus:ring-2 focus:ring-accent/30
+           focus:border-accent/60 transition-colors;
+  }
+
+  /* ── Cards ── */
+  .card      { @apply bg-white border border-charcoal/10 rounded-xl p-6; }
+  .card-hover { @apply card transition-all hover:border-charcoal/30 hover:bg-charcoal/3; }
+
+  /* ── Poster card ── */
+  /* The coloured top half of an event poster */
+  .poster-bg-movie {
+    background: linear-gradient(145deg, #111 0%, #1e1e1e 40%, #2a0808 70%, #1A1A1A 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .poster-bg-movie::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 55%, rgba(200,16,46,0.25) 100%);
+  }
+  .poster-bg-concert {
+    background: linear-gradient(145deg, #1a120a 0%, #2e1d0e 40%, #3d2606 70%, #1e1408 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .poster-bg-concert::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 55%, rgba(200,160,46,0.20) 100%);
+  }
+
+  /* Consistent charcoal gradient overlay for poster text readability */
+  .poster-gradient {
+    @apply absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/40 to-transparent pointer-events-none;
+  }
+
+  /* ── Badge / chip ── */
+  .badge         { @apply inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-bold tracking-wide uppercase; }
+  .badge-movie   { @apply badge bg-accent text-white; }
+  .badge-concert { @apply badge bg-amber-600 text-white; }
+  .badge-status-ok  { @apply badge bg-green-100 text-green-700; }
+  .badge-status-err { @apply badge bg-red-100 text-red-700; }
+  .badge-type    { @apply badge bg-charcoal/8 text-charcoal/65; }
+
+  /* Legacy compat */
+  .badge-available { @apply badge bg-green-100 text-green-700; }
+  .badge-held      { @apply badge bg-amber-100 text-amber-700; }
+  .badge-booked    { @apply badge bg-charcoal/10 text-charcoal/50; }
+
+  /* ── Stat pill ── */
+  .stat-pill { @apply text-xs font-semibold bg-charcoal/6 text-charcoal/55 px-2.5 py-1 rounded-full border border-charcoal/8; }
+
+  /* ── Showtime row ── */
+  .showtime-row {
+    @apply flex items-center justify-between gap-4 px-5 py-4 border border-charcoal/12
+           rounded-lg cursor-pointer transition-all hover:border-charcoal/30 hover:bg-charcoal/3 text-sm;
+  }
+  .showtime-row-active {
+    @apply flex items-center justify-between gap-4 px-5 py-4 rounded-lg text-sm
+           bg-accent text-white cursor-pointer;
+  }
+
+  /* ── Section divider ── */
+  .section-divider { @apply border-b border-charcoal/10 pb-4 mb-8; }
+  .section-gap { @apply mb-10 md:mb-12; }
+
+  /* ── Dropdown menu (account menu) ── */
+  .dropdown-menu {
+    @apply absolute right-0 mt-2 w-56 bg-white border border-charcoal/10 rounded-xl shadow-lg z-50 overflow-hidden;
+  }
+  .dropdown-header {
+    @apply bg-charcoal/5 px-4 py-2 border-b border-charcoal/10;
+  }
+  .dropdown-item {
+    @apply block px-4 py-2 text-sm text-charcoal/80 hover:bg-charcoal/5 transition-colors;
+  }
+
+  /* ── Links ── */
+  .link { @apply text-accent transition-opacity hover:opacity-70; }
+
+  /* ── Ticket Card Redesign (Premium High Contrast) ── */
+  .ticket-card {
+    @apply relative flex flex-col sm:flex-row w-full max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.15)] bg-charcoal text-white;
+  }
+  .ticket-qr-section {
+    @apply p-4 sm:p-6 sm:w-[30%] bg-[#111] flex flex-col items-center justify-center shrink-0 border-b sm:border-b-0 sm:border-r border-dashed border-white/10 relative;
+  }
+
+  .ticket-details-section {
+    @apply p-5 sm:p-6 sm:w-[70%] flex flex-col justify-between bg-charcoal relative overflow-hidden;
+  }
+}
+
+@layer utilities {
+  .border-default  { @apply border border-charcoal/10; }
+  .text-muted      { @apply text-charcoal/60; }
+  .text-subtle     { @apply text-charcoal/40; }
+  .bg-charcoal\/3  { background-color: rgba(26,26,26,0.03); }
+  .bg-charcoal\/6  { background-color: rgba(26,26,26,0.06); }
+  .bg-charcoal\/8  { background-color: rgba(26,26,26,0.08); }
+  .border-charcoal\/8  { border-color: rgba(26,26,26,0.08); }
+  .border-charcoal\/12 { border-color: rgba(26,26,26,0.12); }
+  .border-charcoal\/15 { border-color: rgba(26,26,26,0.15); }
+}
+
+/* ── Seat map ── */
+.seat          { @apply w-8 h-8 md:w-10 md:h-10 rounded border-2 flex items-center justify-center text-xs font-medium transition-all duration-150; }
+.seat-available{ @apply seat border-green-400 bg-green-50 text-green-700 hover:bg-green-100 cursor-pointer; }
+.seat-held     { @apply seat border-amber-400 bg-amber-50 text-amber-700 cursor-not-allowed; }
+.seat-booked   { @apply seat border-charcoal/20 bg-charcoal/5 text-charcoal/30 cursor-not-allowed; }
+.seat-selected { @apply seat border-accent bg-accent/10 text-accent ring-2 ring-accent/30; }
+
+.seat-countdown {
+  @apply absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-mono bg-charcoal text-white px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 transition-opacity;
+}
+.seat-held:hover .seat-countdown { @apply opacity-100; }
+
+/* ── Focus ── */
+*:focus-visible { @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-background; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { @apply w-1.5 h-1.5; }
+::-webkit-scrollbar-track { @apply bg-transparent; }
+::-webkit-scrollbar-thumb { @apply bg-charcoal/15 rounded-full; }
+
+/* ── Front page keyframe animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes lineExpand {
+  from { width: 0; }
+  to { width: 60px; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ── Stat counter pill for hero ── */
+.hero-stat {
+  @apply flex flex-col items-center gap-1 px-6;
+}
+.hero-stat-value {
+  @apply font-serif text-2xl md:text-3xl text-white;
+}
+.hero-stat-label {
+  @apply text-[11px] font-bold uppercase tracking-[0.2em] text-white/40;
+}
+
+/* ── Feature card (How It Works) ── */
+.feature-card {
+  @apply relative pl-4 pt-4 transition-all duration-500;
+}
+.feature-card::before {
+  content: '';
+  @apply absolute left-0 top-0 w-[3px] h-full bg-charcoal/8 rounded-full transition-all duration-500;
+}
+.feature-card:hover::before {
+  @apply bg-accent;
+}
+
+/* ── Footer link hover ── */
+.footer-link {
+  @apply text-white/40 hover:text-white/70 transition-colors duration-300 text-sm;
+}

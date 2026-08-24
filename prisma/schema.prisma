@@ -1,0 +1,212 @@
+// Ticket Booking System - Prisma Schema
+// Generated from spec.md Section 6
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ORGANISER
+  ADMIN
+}
+
+enum EventType {
+  MOVIE
+  CONCERT
+}
+
+enum SeatStatus {
+  AVAILABLE
+  HELD
+  BOOKED
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  DECLINED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+
+  events    Event[]      @relation("OrganiserEvents")
+  venues            Venue[]          @relation("VenueAdmin")
+  bookings          Booking[]
+  waitlists         Waitlist[]
+  notifications     Notification[]
+  sentTransfers     TicketTransfer[] @relation("Sender")
+  receivedTransfers TicketTransfer[] @relation("Recipient")
+}
+
+model Venue {
+  id       String  @id @default(uuid())
+  name     String
+  address  String
+  admin    User?   @relation("VenueAdmin", fields: [adminId], references: [id])
+  adminId  String?
+  seats    Seat[]
+  shows    Show[]
+}
+
+model Seat {
+  id           String        @id @default(uuid())
+  venue        Venue         @relation(fields: [venueId], references: [id])
+  venueId      String
+  row          String
+  number       Int
+  category     String
+  seatHolds    SeatHold[]
+  bookingSeats BookingSeat[]
+  transfers    TicketTransfer[]
+
+  @@unique([venueId, row, number])
+}
+
+model Event {
+  id          String     @id @default(uuid())
+  title       String
+  type        EventType
+  description String?
+  imageUrl    String?
+  organiser   User       @relation("OrganiserEvents", fields: [organiserId], references: [id])
+  organiserId String
+  shows       Show[]
+  createdAt   DateTime   @default(now())
+}
+
+model Show {
+  id          String      @id @default(uuid())
+  event       Event       @relation(fields: [eventId], references: [id])
+  eventId     String
+  venue       Venue       @relation(fields: [venueId], references: [id])
+  venueId     String
+  date        DateTime
+  holdTtlMins Int         @default(10)
+  prices      ShowPrice[]
+  seatHolds   SeatHold[]
+  bookings    Booking[]
+  waitlists   Waitlist[]
+}
+
+model ShowPrice {
+  id       String  @id @default(uuid())
+  show     Show    @relation(fields: [showId], references: [id])
+  showId   String
+  category String
+  price    Decimal
+
+  @@unique([showId, category])
+}
+
+model SeatHold {
+  id        String   @id @default(uuid())
+  show      Show     @relation(fields: [showId], references: [id])
+  showId    String
+  seat      Seat     @relation(fields: [seatId], references: [id])
+  seatId    String
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([showId, seatId])
+  @@index([expiresAt])
+}
+
+model Booking {
+  id          String        @id @default(uuid())
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String
+  show        Show          @relation(fields: [showId], references: [id])
+  showId      String
+  status      BookingStatus @default(CONFIRMED)
+  reference   String        @unique
+  totalAmount Decimal
+  seats             BookingSeat[]
+  originalTransfers TicketTransfer[] @relation("OriginalBooking")
+  newTransfers      TicketTransfer[] @relation("NewBooking")
+  createdAt         DateTime         @default(now())
+}
+
+model BookingSeat {
+  id        String  @id @default(uuid())
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  bookingId String
+  seat      Seat    @relation(fields: [seatId], references: [id])
+  seatId    String
+
+  @@unique([bookingId, seatId])
+}
+
+model Waitlist {
+  id        String   @id @default(uuid())
+  show      Show     @relation(fields: [showId], references: [id])
+  showId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  category  String
+  position  Int
+  offer     Offer?
+  createdAt DateTime @default(now())
+}
+
+model Offer {
+  id         String      @id @default(uuid())
+  waitlist   Waitlist    @relation(fields: [waitlistId], references: [id])
+  waitlistId String      @unique
+  seatId     String
+  status     OfferStatus @default(PENDING)
+  expiresAt  DateTime
+  createdAt  DateTime    @default(now())
+
+  @@index([expiresAt])
+}
+
+model TicketTransfer {
+  id                String   @id @default(uuid())
+  sender            User     @relation("Sender", fields: [senderId], references: [id])
+  senderId          String
+  recipient         User     @relation("Recipient", fields: [recipientId], references: [id])
+  recipientId       String
+  seat              Seat     @relation(fields: [seatId], references: [id])
+  seatId            String
+  originalBooking   Booking  @relation("OriginalBooking", fields: [originalBookingId], references: [id])
+  originalBookingId String
+  newBooking        Booking  @relation("NewBooking", fields: [newBookingId], references: [id])
+  newBookingId      String
+  createdAt         DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+}
+
+model OrganiserKey {
+  key       String   @id
+  createdAt DateTime @default(now())
+}
