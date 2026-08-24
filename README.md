@@ -1,10 +1,12 @@
-# 🎬 Ticket Booking System
+# 🎬 Curtain
 
 A full-stack ticket booking platform featuring real-time seat holds, concurrency protection, and automated waitlist management.
 
 Built with **Next.js 14**, **Prisma**, **PostgreSQL**, and **Tailwind CSS** — designed to handle high-demand movie and concert ticket drops without double-booking.
 
-> **Live Demo:** [https://ticket-booking-system.vercel.app](https://ticket-booking-system.vercel.app)
+**Curtain** — because every great show starts when the curtain rises.
+
+> **Live Demo:** [https://curtain-green.vercel.app](https://curtain-green.vercel.app)
 
 ---
 
@@ -295,7 +297,7 @@ Waitlist offers expire after a configurable window (default: 24 hours).
 ## 🏗️ Project Structure
 
 ```
-ticket-booking-system/
+curtain/
 ├── prisma/
 │   ├── schema.prisma          # Database schema (12 models)
 │   └── seed.ts                # Demo data seeder
